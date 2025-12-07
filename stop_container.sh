@@ -7,7 +7,7 @@ build_number=$2
 # 查找所有容器（包括停止的），名字中完全匹配镜像名的容器ID（第一列）
 containerStr=`docker ps -a | grep -w ${imageName} | awk '{print $1}'`
 # 查找镜像列表中名字完全匹配的镜像ID（第三列）
-imageStr=`docker images | grep -w $imageName  | awk '{print $3}'`
+imageStr=`docker images | grep -w $imageName  | awk '{print $2}'`
 
 echo "container id:$containerStr"
 echo "image id:$imageStr"
@@ -23,9 +23,9 @@ if [ "$imageStr" !=  "" ] ; then
     docker rm `docker ps -a | grep -w ${imageName}  | awk '{print $1}'`
 
     # 删除镜像，排除当前build_number版本的镜像（v开头的标签）
-    docker rmi -f $(docker images | grep $imageName | grep -v v$build_number | awk '{print $3}')
+    docker rmi -f $(docker images | grep $imageName | grep -v v$build_number | awk '{print $2}')
   else
     # 如果没有容器，则直接删除所有除了当前build_number版本以外的镜像
-    docker rmi -f $(docker images | grep $imageName | grep -v v$build_number | awk '{print $3}')
+    docker rmi -f $(docker images | grep $imageName | grep -v v$build_number | awk '{print $2}')
   fi
 fi
